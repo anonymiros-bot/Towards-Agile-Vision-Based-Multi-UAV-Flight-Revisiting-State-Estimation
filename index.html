@@ -1,68 +1,256 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Towards Agile Vision-Based Multi-UAV Flight: Revisiting State Estimation</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      max-width: 860px;
-      margin: 60px auto;
-      padding: 0 24px;
-      color: #222;
-      line-height: 1.6;
-    }
-    h1 {
-      font-size: 1.5em;
-      margin-bottom: 0.3em;
-    }
-    .subtitle {
-      color: #555;
-      font-size: 0.95em;
-      margin-bottom: 2.5em;
-    }
-    h2 {
-      font-size: 1.1em;
-      margin-top: 2.5em;
-      margin-bottom: 0.8em;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 0.3em;
-    }
-    .video-wrapper {
-      position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
-      margin: 1em 0 2.5em 0;
-    }
-    .video-wrapper iframe {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      border: 0;
-      border-radius: 6px;
-    }
-    .notice {
-      background: #f5f5f5;
-      border-left: 3px solid #aaa;
-      padding: 0.8em 1.2em;
-      border-radius: 0 4px 4px 0;
-      color: #444;
-      font-size: 0.95em;
-      margin-top: 2em;
-    }
-    .notice a { color: #0066cc; }
-  </style>
+<title>Towards Agile Vision-Based Multi-UAV Flight: Revisiting State Estimation</title>
+<style>
+body {
+  font-family: sans-serif;
+  max-width: 860px;
+  margin: 60px auto;
+  padding: 0 24px;
+  color: #222;
+  line-height: 1.6;
+}
+h1 {
+  font-size: 1.5em;
+  margin-bottom: 0.3em;
+}
+.subtitle {
+  color: #555;
+  font-size: 0.95em;
+  margin-bottom: 2.5em;
+}
+h2 {
+  font-size: 1.1em;
+  margin-top: 2.5em;
+  margin-bottom: 0.8em;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.3em;
+}
+.video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  margin: 1em 0 2.5em 0;
+}
+.video-wrapper iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border: 0;
+  border-radius: 6px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+}
+td {
+  padding: 0.6em 0.8em;
+  border-bottom: 1px solid #eee;
+}
+td:first-child {
+  width: 280px;
+  color: #555;
+}
+td a {
+  color: #0066cc;
+}
+.todo {
+  background: #fff3cd;
+  color: #856404;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.85em;
+}
+.abstract {
+  background: #f9f9f9;
+  padding: 1em 1.2em;
+  border-radius: 4px;
+  font-size: 0.95em;
+  margin: 1em 0;
+}
+</style>
 </head>
 <body>
-  <h1>Towards Agile Vision-Based Multi-UAV Flight: Revisiting State Estimation</h1>
-  <p class="subtitle">Supplementary material</p>
-  <h2>Video</h2>
-  <div class="video-wrapper">
-    <iframe src="https://www.youtube.com/embed/2dvHwL75_k0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen></iframe>
-  </div>
-  <div class="notice">
-    📦 <strong>Code:</strong> <a href="https://github.com/anonymiros-bot/tilt-detection-and-estimation">github.com/anonymiros-bot/tilt-detection-and-estimation</a> — Models and dataset will be released shortly.
-  </div>
+
+<h1>Towards Agile Vision-Based Multi-UAV Flight: Revisiting State Estimation</h1>
+<p class="subtitle">Submitted to IROS 2026</p>
+
+<!-- TODO: change to "IROS 2026" after acceptance -->
+
+<h2>Abstract</h2>
+<div class="abstract">
+Agile multi-UAV flight requires accurate and low-latency onboard estimation of the kinematic states of neighboring UAVs for collision avoidance, motion coordination, etc. Most vision-based approaches rely on position-only measurements, inferring velocity and acceleration indirectly from displacement. We show that this introduces a fixed structural delay in the estimation of higher-order states, which limits the achievable agility. To address this, we propose to integrate tilt measurements, provided by a state-of-the-art visual detector, which inform about the thrust direction of co-planar multirotor UAVs. We benchmark four position-only and five pose-aware estimators, including a novel formulation of a linear thrust-constraining Kalman Filter, on two real-world and one high-fidelity photorealistic simulated dataset over different levels of agility (3–21 m s<sup>−2</sup>). In our setup, pose-aware estimation consistently reduces the average velocity and acceleration estimation errors by 40 % and 57 % across the three datasets with the proposed KF formulation outperforming the other estimators. Position-only filters exhibit a constant ~300 ms delay in acceleration step response independent of agility, whereas the tilt-constrained estimators operate near the physical response limit given by the camera frame-rate by observing the change in thrust direction before the displacement accumulates. In a closed-loop leader–follower simulated experiment with NMPC control, position-only estimation of the leader's state fails to facilitate stable hovering of the follower, while the proposed estimator enables tracking of lateral maneuvers exceeding 2 g of acceleration.
+</div>
+
+<h2>Video</h2>
+<div class="video-wrapper">
+  <iframe src="https://www.youtube.com/embed/2dvHwL75_k0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
+</div>
+
+<h2>Code & Data</h2>
+<table>
+  <tr>
+    <td>📦 UAV state estimation benchmark</td>
+    <td><a href="https://drive.google.com/drive/folders/1S6VAXAbIm9brbK2wzoEmhsttdVWEs9j1?usp=drive_link">Google Drive</a></td>
+    <!-- Contains: detection outputs (pos, orientation) + GT (pos, vel, acc) for all sequences -->
+  </tr>
+  <tr>
+    <td>📊 State estimation & CMA-ES tuning code</td>
+    <td><a href="https://github.com/anonymiros-bot/tilt-detection-and-estimation">github.com/anonymiros-bot/tilt-detection-and-estimation</a></td>
+    <!-- TODO: update to real repo after de-anonymization -->
+  </tr>
+  <tr>
+    <td>🔍 YOLOv5-6D code</td>
+    <td><a href="https://github.com/anonymiros-bot/YOLOv5-6D-Pose">github.com/anonymiros-bot/YOLOv5-6D-Pose</a></td>
+    <!-- TODO: update to real repo after de-anonymization -->
+  </tr>
+  <tr>
+    <td>🧠 YOLOv5-6D weights</td>
+    <td><a href="https://drive.google.com/drive/folders/1nZsnAD0rCxkVpD7aDKQ9ucQ5p88Euxij?usp=drive_link">Google Drive</a> (unreal, phantom4, mavic2)</td>
+    <!-- Trained on: Unreal, Phantom 4, Mavic 2 -->
+  </tr>
+  <tr>
+    <td>🖼️ Unreal training images</td>
+    <td><span class="todo">TODO: upload dataset, add link</span></td>
+    <!-- Contains: RGB images + 3D bounding box annotations for YOLOv5-6D training -->
+  </tr>
+  <tr>
+    <td>🖼️ Unreal testing images</td>
+    <td><span class="todo">TODO: upload dataset, add link</span></td>
+    <!-- Contains: RGB images + annotations for the 140 test sequences -->
+  </tr>
+  <tr>
+    <td>🖼️ Phantom 4 / Mavic 2 images</td>
+    <td><span class="todo">TODO: upload</span> or <a href="https://github.com/WindyLab/MAV6D">MAV6D (Zheng et al.)</a></td>
+  </tr>
+</table>
+
+<h2>Quick Start</h2>
+
+<p><strong>Path A: Reproduce paper results (minimal)</strong></p>
+<p>Detections are pre-computed — no images or YOLOv5-6D needed.</p>
+<pre>
+# 1. Clone estimator repo
+git clone https://github.com/anonymiros-bot/tilt-detection-and-estimation
+
+# 2. Download benchmark JSONs from Google Drive, place in data/
+
+# 3. Tune on Unreal training set
+./run_tuning.sh unreal paper_results
+
+# 4. Evaluate (Table II in paper)
+./run_evaluation.sh unreal unreal      # Unreal
+./run_evaluation.sh unreal phantom4    # Phantom 4
+./run_evaluation.sh unreal mavic2      # Mavic 2
+</pre>
+
+<p><strong>Path B: Run detection from images (full pipeline)</strong></p>
+<p>Generate your own detections using YOLOv5-6D + PnP.</p>
+<pre>
+# 1. Clone YOLOv5-6D repo, download weights
+git clone https://github.com/anonymiros-bot/YOLOv5-6D-Pose
+
+# 2. Download images:
+#    - Unreal: [Google Drive TODO]
+#    - Phantom 4 / Mavic 2: [Google Drive TODO] or from MAV6D
+
+# 3. Edit paths in script headers, then run:
+python pnp_eval_all_unreal_flying.py   # → pnp_results.json
+python pnp_eval_all_real.py            # → pnp_results.json
+
+# 4. Use output JSONs with estimator repo (same format as benchmark)
+</pre>
+
+<p><strong>Path C: Train your own detector (Unreal)</strong></p>
+<p>We release ~13k training images for benchmarking new UAV pose estimation methods. This training set is completely independent from the test sequences used for evaluation.</p>
+<pre>
+# 1. Clone YOLOv5-6D repo
+git clone https://github.com/anonymiros-bot/YOLOv5-6D-Pose
+
+# 2. Download Unreal training images: [Google Drive TODO]
+
+# 3. Train (see original YOLOv5-6D-Pose README for details)
+python train.py --data configs/shiu/unreal.yaml --cfg yolov5x_6dpose_bifpn.yaml ...
+</pre>
+
+<h2>Dataset Details</h2>
+
+<p><strong>UAV state estimation benchmark</strong> — Flight sequences with ground truth and detections.</p>
+<pre>
+├── unreal/           # 140 seq, 33k frames, flying camera, 1.5–8 m
+│   ├── train.json    # 70 seq for tuning
+│   ├── test.json     # 70 seq for evaluation
+│   └── acc_step_test.json  # 35 seq for latency analysis (Table V)
+├── phantom4/         # 68 seq, 17k frames, static camera, 1.9–5.1 m
+└── mavic2/           # 61 seq, 17k frames, static camera, 1.9–5.1 m
+</pre>
+
+<p>Each sequence contains:</p>
+<pre>
+Ground truth        pos, rts_vel, rts_acc    position, velocity, acceleration
+                    quat, omega_b            orientation, angular velocity
+                    t                        timestamps
+                    level                    agility: 3, 6, 9, 12, 15, 18, 21 m/s² (Unreal only)
+
+Detections          pnp_pos, pnp_q           position & orientation from YOLOv5-6D + PnP
+
+Metadata            image_dir                path to corresponding images (Unreal only)
+</pre>
+
+<p><strong>End-to-end pipeline</strong></p>
+<pre>
+images → YOLOv5-6D → keypoints → PnP → pnp_pos, pnp_q → estimators → filtered state
+         (detection)  (9 pts)   (pose)  (measurements)  (Z-KF, etc.)  (pos, vel, acc)
+</pre>
+
+<!-- 
+=== RELEASE CHECKLIST ===
+
+[ ] Estimator code
+    [x] Clean repo
+    [x] Fix README
+    [ ] De-anonymize after acceptance
+
+[ ] UAV state estimation benchmark
+    [ ] Export detection outputs for all sequences
+    [ ] Include GT pos/vel/acc
+    [ ] Document format
+    [ ] Upload (Zenodo? university server?)
+
+[ ] Unreal training images
+    [ ] ~13k training images
+    [ ] 3D bounding box annotations
+    [ ] Document format
+    [ ] Upload
+
+[ ] Unreal testing images  
+    [ ] 140 sequences, 33460 frames
+    [ ] Annotations
+    [ ] Upload
+
+[ ] YOLOv5-6D
+    [ ] Code repo (fork? separate repo?)
+    [ ] Trained weights (Unreal, Phantom 4, Mavic 2)
+    [ ] Training config
+    [ ] Upload weights
+
+[ ] Final
+    [ ] Update this page with real links
+    [ ] Update bit.ly redirect
+    [ ] De-anonymize repos
+-->
+
+<p style="margin-top: 3em; color: #666; font-size: 0.9em;">
+📝 Repository structure and documentation are being refined based on user feedback.
+</p>
+
+<p style="color: #666; font-size: 0.9em;">
+Questions or issues? <a href="mailto:anonymiros@gmail.com">anonymiros@gmail.com</a>
+</p>
+
 </body>
 </html>
