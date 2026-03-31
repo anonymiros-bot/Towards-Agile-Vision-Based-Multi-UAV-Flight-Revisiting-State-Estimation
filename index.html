@@ -115,17 +115,15 @@ Agile multi-UAV flight requires accurate and low-latency onboard estimation of t
   </tr>
   <tr>
     <td>🖼️ Unreal training images</td>
-    <td><span class="todo">TODO: upload dataset, add link</span></td>
-    <!-- Contains: RGB images + 3D bounding box annotations for YOLOv5-6D training -->
+    <td><a href="https://drive.google.com/file/d/1WpraNktn7V5RTxr9kezKYLwCgV50uEUh/view?usp=drive_link">Google Drive</a></td>
   </tr>
   <tr>
     <td>🖼️ Unreal testing images</td>
-    <td><span class="todo">TODO: upload dataset, add link</span></td>
-    <!-- Contains: RGB images + annotations for the 140 test sequences -->
+    <td><a href="https://drive.google.com/file/d/1WpraNktn7V5RTxr9kezKYLwCgV50uEUh/view?usp=drive_link">Google Drive</a></td>
   </tr>
   <tr>
     <td>🖼️ Phantom 4 / Mavic 2 images</td>
-    <td><span class="todo">TODO: upload</span> or <a href="https://github.com/WindyLab/MAV6D">MAV6D (Zheng et al.)</a></td>
+    <td><a href="https://drive.google.com/file/d/1WpraNktn7V5RTxr9kezKYLwCgV50uEUh/view?usp=drive_link">Google Drive</a> or <a href="https://github.com/WindyLab/MAV6D">MAV6D (Zheng et al.)</a></td>
   </tr>
 </table>
 
@@ -155,8 +153,8 @@ git clone https://github.com/anonymiros-bot/tilt-detection-and-estimation
 git clone https://github.com/anonymiros-bot/YOLOv5-6D-Pose
 
 # 2. Download images:
-#    - Unreal: [Google Drive TODO]
-#    - Phantom 4 / Mavic 2: [Google Drive TODO] or from MAV6D
+#    - Unreal: https://drive.google.com/file/d/1WpraNktn7V5RTxr9kezKYLwCgV50uEUh
+#    - Phantom 4 / Mavic 2: https://drive.google.com/file/d/1WpraNktn7V5RTxr9kezKYLwCgV50uEUh or MAV6D
 
 # 3. Edit paths in script headers, then run:
 python pnp_eval_all_unreal_flying.py   # → pnp_results.json
@@ -171,7 +169,7 @@ python pnp_eval_all_real.py            # → pnp_results.json
 # 1. Clone YOLOv5-6D repo
 git clone https://github.com/anonymiros-bot/YOLOv5-6D-Pose
 
-# 2. Download Unreal training images: [Google Drive TODO]
+# 2. Download Unreal training images: https://drive.google.com/file/d/1WpraNktn7V5RTxr9kezKYLwCgV50uEUh
 
 # 3. Train (see original YOLOv5-6D-Pose README for details)
 python train.py --data configs/shiu/unreal.yaml --cfg yolov5x_6dpose_bifpn.yaml ...
@@ -249,8 +247,4 @@ images → YOLOv5-6D → keypoints → PnP → pnp_pos, pnp_q → estimators →
 </p>
 
 <p style="color: #666; font-size: 0.9em;">
-Questions or issues? <a href="mailto:anonymiros@gmail.com">anonymiros@gmail.com</a>
-</p>
-
-</body>
-</html>
+Questions or issues? <a href="/cdn-cgi/l/email-protection#24454a4b4a5d494d564b57644349454d480a474b49"><spa
