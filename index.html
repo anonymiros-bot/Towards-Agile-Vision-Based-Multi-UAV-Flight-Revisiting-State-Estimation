@@ -126,7 +126,7 @@ Agile multi-UAV flight requires accurate and low-latency onboard estimation of t
 </tr>
 </table>
 
-<p><strong>End-to-end pipeline</strong></p>
+<h2>Pipeline</h2>
 <pre>
 images → YOLOv5-6D → keypoints → PnP → pnp_pos, pnp_q → estimators → filtered state
          (detection)  (9 pts)   (pose)  (measurements)  (Z-KF, etc.)  (pos, vel, acc)
@@ -165,14 +165,14 @@ pip install -r requirements.txt        # see https://github.com/cviviers/YOLOv5-
 # 2. Download pre-trained weights (~2.7 GB)
 ./setup_weights.sh
 
-# 3. Download benchmark images (~70 GB)
+# 3. Download flight sequence images (~70 GB)
 ./setup_data.sh
 
 # 4. Run detection + PnP
 python pnp_eval_all_unreal_flying.py   # 140 flying sequences
 python pnp_eval_all_unreal_step.py     # 35 step response sequences
-python pnp_eval_all_real_mavic2.py     # DJI Mavic 2
-python pnp_eval_all_real_phantom4.py   # DJI Phantom 4
+python pnp_eval_all_real_mavic2.py     # DJI Mavic 2 sequences
+python pnp_eval_all_real_phantom4.py   # DJI Phantom 4 sequences
 
 # 5. Use output JSONs with estimator repo (same format as benchmark)
 </pre>
