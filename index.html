@@ -126,6 +126,12 @@ Agile multi-UAV flight requires accurate and low-latency onboard estimation of t
   </tr>
 </table>
 
+<p><strong>End-to-end pipeline</strong></p>
+<pre>
+images → YOLOv5-6D → keypoints → PnP → pnp_pos, pnp_q → estimators → filtered state
+         (detection)  (9 pts)   (pose)  (measurements)  (Z-KF, etc.)  (pos, vel, acc)
+</pre>
+
 <h2>Quick Start</h2>
 
 <p><strong>Path A: Reproduce paper results (minimal)</strong></p>
@@ -210,12 +216,6 @@ Ground truth        pos, rts_vel, rts_acc    position, velocity, acceleration
 Detections          pnp_pos, pnp_q           position & orientation from YOLOv5-6D + PnP
 
 Metadata            image_dir                path to corresponding images (Unreal only)
-</pre>
-
-<p><strong>End-to-end pipeline</strong></p>
-<pre>
-images → YOLOv5-6D → keypoints → PnP → pnp_pos, pnp_q → estimators → filtered state
-         (detection)  (9 pts)   (pose)  (measurements)  (Z-KF, etc.)  (pos, vel, acc)
 </pre>
 
 <!-- 
