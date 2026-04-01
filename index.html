@@ -95,8 +95,7 @@ Agile multi-UAV flight requires accurate and low-latency onboard estimation of t
 <table>
   <tr>
     <td>📦 UAV state estimation benchmark</td>
-    <td><a href="https://drive.google.com/drive/folders/1S6VAXAbIm9brbK2wzoEmhsttdVWEs9j1?usp=drive_link">Google Drive</a></td>
-    <!-- Contains: detection outputs (pos, orientation) + GT (pos, vel, acc) for all sequences -->
+    <td><a href="https://drive.google.com/file/d/1rVYhiVOzvNwJvnfJHwRbuJrUifHJma2F/view?usp=drive_link">Google Drive</a></td>
   </tr>
   <tr>
     <td>📊 State estimation & CMA-ES tuning code</td>
@@ -132,18 +131,21 @@ Agile multi-UAV flight requires accurate and low-latency onboard estimation of t
 <p><strong>Path A: Reproduce paper results (minimal)</strong></p>
 <p>Detections are pre-computed — no images or YOLOv5-6D needed.</p>
 <pre>
-# 1. Clone estimator repo
+# 1. Clone
 git clone https://github.com/anonymiros-bot/tilt-detection-and-estimation
+cd tilt-detection-and-estimation
 
-# 2. Download benchmark JSONs from Google Drive, place in data/
+# 2. Get data (choose one)
+./setup_data.sh                        # downloads data + 10 independent tuning runs per filter
+# or manually: download from Google Drive, extract to data/ and runs/ in repo root
 
-# 3. Tune on Unreal training set
-./run_tuning.sh unreal paper_results
+# 3. Evaluate (reproduces Table II)
+./run_evaluation.sh unreal_train unreal_test      # Unreal
+./run_evaluation.sh unreal_train phantom4_test    # Phantom 4
+./run_evaluation.sh unreal_train mavic2_test      # Mavic 2
 
-# 4. Evaluate (Table II in paper)
-./run_evaluation.sh unreal unreal      # Unreal
-./run_evaluation.sh unreal phantom4    # Phantom 4
-./run_evaluation.sh unreal mavic2      # Mavic 2
+# (optional) Re-tune estimators from scratch
+./run_tuning.sh unreal_train
 </pre>
 
 <p><strong>Path B: Run detection from images (full pipeline)</strong></p>
@@ -179,12 +181,13 @@ python train.py --data configs/shiu/unreal.yaml --cfg yolov5x_6dpose_bifpn.yaml 
 
 <p><strong>UAV state estimation benchmark</strong> — Flight sequences with ground truth and detections.</p>
 <pre>
-├── unreal/           # 140 seq, 33k frames, flying camera, 1.5–8 m
-│   ├── train.json    # 70 seq for tuning
-│   ├── test.json     # 70 seq for evaluation
-│   └── acc_step_test.json  # 35 seq for latency analysis (Table V)
-├── phantom4/         # 68 seq, 17k frames, static camera, 1.9–5.1 m
-└── mavic2/           # 61 seq, 17k frames, static camera, 1.9–5.1 m
+├── unreal_train/train.json     # 70 seq for tuning
+├── unreal_test/test.json       # 70 seq for evaluation
+├── acc_step_test/test.json     # 35 seq for latency analysis (Table V)
+├── phantom4_train/train.json   
+├── phantom4_test/test.json     # 68 seq total, static camera, 1.9–5.1 m
+├── mavic2_train/train.json     
+└── mavic2_test/test.json       # 61 seq total, static camera, 1.9–5.1 m
 </pre>
 
 <p>Each sequence contains:</p>
