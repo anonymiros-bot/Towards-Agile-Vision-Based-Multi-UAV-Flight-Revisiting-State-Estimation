@@ -155,12 +155,14 @@ cd tilt-detection-and-estimation
 </pre>
 
 <p><strong>Path B: Run detection from images (full pipeline)</strong></p>
-<p>Generate your own detections using YOLOv5-6D + PnP.</p>
+<p>Generate your own detections using YOLOv5-6D + PnP.
+Based on <a href="https://github.com/cviviers/YOLOv5-6D-Pose">YOLOv5-6D-Pose</a> by Viviers et al., see for more details.</p>
 <pre>
 # 1. Clone & install
 git clone https://github.com/anonymiros-bot/YOLOv5-6D-Pose
 cd YOLOv5-6D-Pose
-pip install -r requirements.txt        # see https://github.com/cviviers/YOLOv5-6D-Pose
+pip install -r requirements.txt
+cd utils && python setup.py build_ext --inplace && cd ..
 
 # 2. Download pre-trained weights (~2.7 GB)
 ./setup_weights.sh
@@ -171,27 +173,39 @@ pip install -r requirements.txt        # see https://github.com/cviviers/YOLOv5-
 # 4. Run detection + PnP
 python pnp_eval_all_unreal_flying.py   # 140 flying sequences
 python pnp_eval_all_unreal_step.py     # 35 step response sequences
-python pnp_eval_all_real_mavic2.py     # DJI Mavic 2 sequences
-python pnp_eval_all_real_phantom4.py   # DJI Phantom 4 sequences
+python pnp_eval_all_real_mavic2.py     # DJI Mavic 2
+python pnp_eval_all_real_phantom4.py   # DJI Phantom 4
 
-# 5. Use output JSONs with estimator repo (same format as benchmark)
+# 5. Run state estimation on the outputs using Path A steps 2-3
 </pre>
-<p style="font-size: 0.9em; color: #555;">
-Setup scripts attempt automatic download via <code>gdown</code>. If download fails, 
-see the script output for manual download links from Google Drive.
-</p>
 
 <p><strong>Path C: Train your own detector (Unreal)</strong></p>
-<p>We release ~13k training images for benchmarking new UAV pose estimation methods. This training set is completely independent from the test sequences used for evaluation.</p>
+<p>We release ~13k training images for benchmarking new UAV pose estimation methods.
+This training set is completely independent from the test sequences used for evaluation.
+See <a href="https://github.com/cviviers/YOLOv5-6D-Pose">original YOLOv5-6D-Pose repo</a> for full training documentation.</p>
 <pre>
-# 1. Clone YOLOv5-6D repo
-git clone https://github.com/anonymiros-bot/YOLOv5-6D-Pose
+# 1. Clone & install (same as Path B step 1)
 
-# 2. Download Unreal training images: https://drive.google.com/file/d/1WpraNktn7V5RTxr9kezKYLwCgV50uEUh
+# 2. Download Unreal training images (~15 GB)
+./setup_train_data.sh
 
-# 3. Train (see original YOLOv5-6D-Pose README for details)
-python train.py --data configs/shiu/unreal.yaml --cfg yolov5x_6dpose_bifpn.yaml ...
+# 3. Train (adjust --batch to fit your GPU memory)
+python train.py \
+    --data configs/unreal.yaml \
+    --cfg models/yolov5x_6dpose_bifpn.yaml \
+    --hyp configs/hyp.single.yaml \
+    --weights yolov5x.pt \
+    --batch 40 \
+    --epochs 1000 \
+    --optimizer Adam
+
+# 4. Run Path B steps 3–5 using your trained weights
 </pre>
+
+<p style="font-size: 0.9em; color: #555;">
+Setup scripts attempt automatic download via <code>gdown</code> — if download fails,
+see the script output for manual download links.
+</p>
 
 <h2>Dataset Details</h2>
 
