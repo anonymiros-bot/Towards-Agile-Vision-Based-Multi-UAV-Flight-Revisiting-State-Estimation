@@ -112,12 +112,12 @@ Agile multi-UAV flight requires accurate and low-latency onboard estimation of t
     <td><a href="https://drive.google.com/file/d/1EL4UmK5QDfc8CrBhunN8P-xHqFs4eJvv/view?usp=drive_link">Google Drive</a> (unreal, phantom4, mavic2)</td>
 </tr>
 <tr>
-    <td>🖼️ Flight sequence images (Unreal + Phantom 4 + Mavic 2)</td>
-    <td><a href="https://drive.google.com/file/d/179BaZZiU6lcHpQI2ritt7IL802FehSvc/view?usp=drive_link">Google Drive</a></td>
+    <td>🖼️ Flight sequence images (processed)</td>
+    <td><a href="https://drive.google.com/file/d/179BaZZiU6lcHpQI2ritt7IL802FehSvc/view?usp=drive_link">Google Drive</a> — Unreal (ours) + Phantom 4 &amp; Mavic 2 (MAV6D, Zheng et al.)</td>
 </tr>
 <tr>
-    <td>🔗 Original real-world dataset (unprocessed)</td>
-    <td><a href="https://github.com/WindyLab/MAV6D">MAV6D (Zheng et al.)</a></td>
+    <td>🔗 MAV6D dataset (Zheng et al.)</td>
+    <td><a href="https://github.com/WindyLab/MAV6D">Original source</a> — unprocessed Phantom 4 &amp; Mavic 2 images</td>
 </tr>
 <tr>
     <td>🖼️ Detector training images (Unreal)</td>
@@ -142,7 +142,6 @@ cd tilt-detection-and-estimation
 
 # 2. Get data (choose one)
 ./setup_data.sh                        # downloads data + 10 independent tuning runs per filter
-# or manually: download from Google Drive, extract to data/ and runs/ in repo root
 
 # 3. Evaluate (reproduces Table II)
 ./run_evaluation.sh unreal_train unreal_test      # Unreal
@@ -155,7 +154,7 @@ cd tilt-detection-and-estimation
 
 <p><strong>Path B: Run detection from images (full pipeline)</strong></p>
 <p>Generate your own detections using YOLOv5-6D + PnP.
-Based on <a href="https://github.com/cviviers/YOLOv5-6D-Pose">YOLOv5-6D-Pose</a> by Viviers et al., see for more details.</p>
+Based on <a href="https://github.com/cviviers/YOLOv5-6D-Pose">YOLOv5-6D-Pose</a> by Viviers et al., see original repo for details.</p>
 <pre>
 # 1. Clone & install
 git clone https://github.com/anonymiros-bot/YOLOv5-6D-Pose
@@ -166,7 +165,7 @@ cd utils && python setup.py build_ext --inplace && cd ..
 # 2. Download pre-trained weights (~2.7 GB)
 ./setup_weights.sh
 
-# 3. Download flight sequence images (~70 GB)
+# 3. Download flight sequence images (~70 GB, includes Unreal + Phantom 4 + Mavic 2)
 ./setup_data.sh
 
 # 4. Run detection + PnP
@@ -206,6 +205,7 @@ Setup scripts attempt automatic download via <code>gdown</code> — if download 
 see the script output for manual download links.
 </p>
 
+<!--
 <h2>Dataset Details</h2>
 
 <p><strong>UAV state estimation benchmark</strong> — Flight sequences with ground truth and detections.</p>
@@ -230,6 +230,76 @@ Detections          pnp_pos, pnp_q           position & orientation from YOLOv5-
 
 Metadata            image_dir                path to corresponding images (Unreal only)
 </pre>
+-->
+
+<h2>A benchmark dataset </h2>
+
+<p><strong>Pre-computed detections (for estimator development)</strong></p>
+<p>If you are developing new state estimation methods, you can use our benchmark data directly — no images or detector needed. Each JSON contains
+ground truth states and YOLOv5-6D + PnP detections across multiple agility levels,
+ready to use as input to your estimator. See Path A above.</p>
+<pre>
+├── unreal_train/train.json     # 70 seq for tuning 
+├── unreal_test/test.json       # 70 seq for evaluation
+├── acc_step_test/test.json     # 35 seq for latency analysis (Table V)
+├── phantom4_train/train.json   # from MAV6D (Zheng et al.)
+├── phantom4_test/test.json     # 68 seq, static camera, 1.9–5.1 m
+├── mavic2_train/train.json     # from MAV6D (Zheng et al.)
+└── mavic2_test/test.json       # 61 seq, static camera, 1.9–5.1 m
+</pre>
+
+<p>Each sequence contains:</p>
+<pre>
+Ground truth        pos, rts_vel, rts_acc    position, velocity, acceleration
+                    quat, omega_b            orientation, angular velocity
+                    t                        timestamps
+                    level                    agility: 3, 6, 9, 12, 15, 18, 21 m/s² (Unreal only)
+
+Detections          pnp_pos, pnp_q           position & orientation from YOLOv5-6D + PnP
+</pre>
+
+<p><strong>Flight sequence images (for pose detection/tracking development)</strong></p>
+<p>If you are developing new visual detection or tracking methods — monocular depth,
+feature-based tracking, alternative pose estimators, etc. — we provide photorealistic
+simulated (Unreal) and real-world (Phantom 4 &amp; Mavic 2, from <a href="https://github.com/WindyLab/MAV6D">MAV6D</a>)
+image sequences of UAV flight with varying camera distances
+and agility levels. A Python <strong>data loader</strong> (<code>load_dataset.py</code>, included in <a href="https://github.com/anonymiros-bot/YOLOv5-6D-Pose">YOLOv5-6D repo</a>) provides direct access to images, ground truth,
+and detections per frame:</p>
+<pre>
+from load_dataset import load_dataset, list_datasets
+
+# See what's available
+list_datasets()
+# → unreal_flying, unreal_step, mavic2, phantom4
+
+# Load all sequences from a dataset
+data = load_dataset("unreal_flying")
+seq  = data["42"]                       # one of 140 main unreal sequences
+
+seq["t"]                    # (N,)   timestamps
+seq["pos"]                  # (N,3)  GT position
+seq["quat"]                 # (N,4)  GT orientation xyzw
+seq["rts_vel"]              # (N,3)  GT velocity
+seq["rts_acc"]              # (N,3)  GT acceleration
+seq["pnp_pos"]              # (N,3)  detected position (NaN if failed)
+seq["pnp_q"]                # (N,4)  detected orientation xyzw (NaN if failed)
+seq["images"]               # [N]    paths to image files
+seq["metadata"]["level"]    # agility level (Unreal only)
+
+
+# Real-world datasets use session/sequence keys (to stay aligned with original MAV6D dataset structure)
+data = load_dataset("mavic2")
+seq  = data["01/0101"]
+seq["pos"]                  # (N,3) GT position in VICON frame
+# ... same fields as above
+seq["images"]               # [N]   paths to image files
+
+# If you don't want to study the directory structure — just iterate over keys
+for key, seq in data.items():
+    print(key, seq["pos"].shape, len(seq["images"]))
+</pre>
+
+
 
 <!-- 
 === RELEASE CHECKLIST ===
